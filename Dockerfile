@@ -1,23 +1,18 @@
-FROM python:3.9
+FROM browserless/chrome:latest
 
-# जरूरी सिस्टम फाइल्स इंस्टॉल करना
-RUN apt-get update && apt-get install -y \
-    wget \
-    curl \
-    unzip \
-    gnupg \
-    --no-install-recommends
-
-# गूगल क्रोम इंस्टॉल करना (Direct Method)
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# यूजर को रूट (Root) बनाना ताकि फाइलें कॉपी हो सकें
+USER root
 
 WORKDIR /app
-COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python", "main.py"]
+# पायथन इंस्टॉल करना (क्योंकि इस इमेज में सिर्फ क्रोम होता है)
+RUN apt-get update && apt-get install -y python3 python3-pip
+
+# फाइलें कॉपी करना
+COPY . .
+
+# लाइब्रेरी इंस्टॉल करना
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# बॉट शुरू करना
+CMD ["python3", "main.py"]

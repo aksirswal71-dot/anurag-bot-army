@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y google-chrome-stable
 
 WORKDIR /app
 COPY . .
+
+# यहाँ स्पेलिंग ठीक कर दी है (requirements)
 RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "main.py"]
